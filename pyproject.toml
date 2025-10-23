@@ -1,0 +1,20 @@
+[project]
+name = "upload-server"
+version = "25.10.1.0"
+description = ""
+authors = [
+    {name = "yourdisenchantment",email = "p.idisenchantment@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi (>=0.119.1,<0.120.0)",
+    "uvicorn (>=0.38.0,<0.39.0)",
+    "pydantic (>=2.12.3,<3.0.0)",
+    "python-multipart>=0.0.20",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.1"
+]
