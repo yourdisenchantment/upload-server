@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Загрузка файлов</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+            rel="stylesheet">
+
+        <link rel="stylesheet" href="/static/styles/app.css">
+        <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg">
+    </head>
+
+    <body>
+        <div class="wrapper">
+            <!-- Header -->
+            <header class="header">
+                <h1>Загрузка файлов</h1>
+            </header>
+
+            <!-- Main -->
+            <main class="main">
+                <div class="container">
+                    <!-- История загрузок -->
+                    <div id="history" class="history" style="display: none;">
+                        <h3>История загрузок</h3>
+                        <div id="history-list" class="history-list">
+                            <!-- Записи истории добавляются через JS -->
+                        </div>
+                    </div>
+
+                    <!-- Кнопка загрузки -->
+                    <input type="file" id="fileInput" multiple hidden>
+                    <button id="uploadBtn" class="upload-btn">
+                        📤 Загрузить файлы
+                    </button>
+
+                    <!-- Прогресс-бар (скрыт по умолчанию) -->
+                    <div id="progressContainer" class="progress-container" style="display: none;">
+                        <div class="progress-info">
+                            <span id="progressText">Загрузка...</span>
+                            <span id="progressPercent">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="progressFill" class="progress-fill"></div>
+                        </div>
+                        <div id="fileInfo" class="file-info"></div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Toast контейнер -->
+            <div id="toastContainer" class="toast-container"></div>
+
+            <!-- Footer (скрыт, нужен для структуры) -->
+            <footer class="footer"></footer>
+        </div>
+
+        <script defern src="/static/scripts/app.js"></script>
+    </body>
+
+</html>

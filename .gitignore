@@ -124,7 +124,6 @@ samples/
 
 *.lock
 
-static/
 public/
 
 node_modules/
