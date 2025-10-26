@@ -113,18 +113,19 @@ function displayHistory(records) {
 
 /**
  * Добавить одну запись в историю
- * Используется как при загрузке всей истории, так и при дозаписи
+ * Формат: {upload_number} | {date} | {file count} ({size})
  */
 function addHistoryItem(record) {
     const item = document.createElement('div')
     item.className = 'history-item'
 
-    const date = formatDate(record.date)
-    const files = pluralizeFiles(record.files_count)
-    const size = formatFileSize(record.total_size)
+    const uploadNum = String(record.upload_number).padStart(5, '0')  // 00006
+    const date = formatDate(record.date)  // 25.01.2025
+    const files = pluralizeFiles(record.files_count)  // 5 файлов
+    const size = formatFileSize(record.total_size)  // 2.3 MB
 
-    // Формат: dd.mm.yyyy: N файлов | X.X MB
-    item.textContent = `${date}: ${files} | ${size}`
+    // Формат: 00006 | 25.01.2025 | 5 файлов (2.3 MB)
+    item.textContent = `${uploadNum} | ${date} | ${files} (${size})`
 
     historyList.appendChild(item)
 }
@@ -133,17 +134,18 @@ function addHistoryItem(record) {
  * Дозаписать новую запись в начало истории
  */
 function prependHistoryItem(record) {
-    // Показать блок истории если был скрыт
     historyBlock.style.display = 'block'
 
     const item = document.createElement('div')
     item.className = 'history-item'
 
-    const date = formatDate(record.date)
-    const files = pluralizeFiles(record.files_count)
-    const size = formatFileSize(record.total_size)
+    const uploadNum = String(record.upload_number).padStart(5, '0')  // 00006
+    const date = formatDate(record.date)  // 25.01.2025
+    const files = pluralizeFiles(record.files_count)  // 5 файлов
+    const size = formatFileSize(record.total_size)  // 2.3 MB
 
-    item.textContent = `${date}: ${files} | ${size}`
+    // Формат: 00006 | 25.01.2025 | 5 файлов (2.3 MB)
+    item.textContent = `${uploadNum} | ${date} | ${files} (${size})`
 
     // Вставить в начало (новые записи сверху)
     historyList.insertBefore(item, historyList.firstChild)
@@ -256,12 +258,13 @@ function onUploadSuccess(result) {
     progressText.textContent = '✅ Загрузка завершена!'
     fileInfo.textContent = result.message
 
-    // Toast уведомление
-    showToast(`Загружено ${pluralizeFiles(result.files_count)}`, 'success')
+    // Toast уведомление с номером
+    showToast(`#${result.upload_number}: Загружено ${pluralizeFiles(result.files_count)}`, 'success')
 
-    // Дозаписать новую запись в историю (без полной перезагрузки)
+    // Дозаписать новую запись в историю
     const newRecord = {
-        date: new Date().toLocaleDateString('ru-RU').split('.').reverse().join('-'), // dd-mm-yyyy
+        upload_number: result.upload_number,  // ← Это поле должно быть!
+        date: new Date().toLocaleDateString('ru-RU').split('.').reverse().join('-'),
         user_id: result.user_id,
         files_count: result.files_count,
         total_size: result.total_size,
@@ -275,6 +278,7 @@ function onUploadSuccess(result) {
     uploadBtn.disabled = false
     fileInput.value = '' // Очистить input
 }
+
 
 /**
  * Ошибка загрузки

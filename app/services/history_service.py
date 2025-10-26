@@ -36,8 +36,10 @@ def get_user_history(user_id: str) -> list[HistoryRecord]:
 
             for row in reader:
                 if row["user_id"] == user_id:
+                    upload_number = int(row["folder_name"].split("_")[0])
                     records.append(
                         HistoryRecord(
+                            upload_number=upload_number,
                             date=row["date"],
                             user_id=row["user_id"],
                             files_count=int(row["files_count"]),
@@ -56,17 +58,14 @@ def get_user_history(user_id: str) -> list[HistoryRecord]:
     return list(reversed(records))
 
 
-def get_today_upload_count(user_id: str) -> int:
-    today = datetime.now().strftime("%d-%m-%Y")
+def get_total_upload_count() -> int:
     count = 0
 
     try:
         with open(HISTORY_FILE, "r", encoding="utf-8") as file:
             reader = csv.DictReader(file)
-
-            for row in reader:
-                if row["user_id"] == user_id and row["date"] == today:
-                    count += 1
+            for _ in reader:
+                count += 1
 
     except FileNotFoundError:
         return 0
@@ -109,3 +108,51 @@ def migrate_history_format():
         print(f"ERROR: {error}")
         if backup_file.exists():
             shutil.copy(backup_file, HISTORY_FILE)
+
+
+def cleanup_old_records(days: int = 14) -> None:
+    from datetime import timedelta
+
+    cutoff_date = datetime.now() - timedelta(days=days)
+
+    try:
+        records_to_keep = []
+
+        with open(HISTORY_FILE, "r", encoding="utf-8") as file:
+            reader = csv.DictReader(file)
+
+            for row in reader:
+                try:
+                    record_date = datetime.strptime(row["date"], "%d-%m-%Y")
+
+                    if record_date >= cutoff_date:
+                        records_to_keep.append(row)
+                except ValueError:
+                    continue
+
+        with open(HISTORY_FILE, "w", newline="", encoding="utf-8") as file:
+            writer = csv.DictWriter(
+                file,
+                fieldnames=[
+                    "date",
+                    "user_id",
+                    "files_count",
+                    "total_size",
+                    "folder_name",
+                ],
+            )
+            writer.writeheader()
+            writer.writerows(records_to_keep)
+
+        total_records = get_total_upload_count()
+        removed_count = total_records - len(records_to_keep)
+
+        if removed_count > 0:
+            print(f"Удалено {removed_count} старых записей (старше {days} дней)")
+        else:
+            print(f"Все записи актуальны (последние {days} дней)")
+
+    except FileNotFoundError:
+        print("История пуста")
+    except Exception as error:
+        print(f"Ошибка очистки истории: {error}")

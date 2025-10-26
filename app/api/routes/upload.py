@@ -26,6 +26,7 @@ async def upload_files(
 
     try:
         result = await upload_service.save_files(user_id, files)
+        upload_number = int(result["folder_name"].split("_")[0])
         history_service.add_record(
             user_id=user_id,
             files_count=result["files_count"],
@@ -45,6 +46,7 @@ async def upload_files(
         return UploadResponse(
             success=True,
             user_id=user_id,
+            upload_number=upload_number,
             folder_name=result["folder_name"],
             files_count=result["files_count"],
             total_size=result["total_size"],
