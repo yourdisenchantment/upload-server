@@ -122,8 +122,6 @@ samples/
 *.tar.gz
 *.tgz
 
-*.lock
-
 public/
 
 node_modules/

@@ -18,7 +18,7 @@
 
 ## Технологии
 
-- **Backend**: FastAPI, Python 3.13+
+- **Backend**: FastAPI, Python 3.14+
 - **Frontend**: Vanilla JavaScript, CSS
 - **Package Manager**: [uv](https://github.com/astral-sh/uv)
 
@@ -26,7 +26,7 @@
 
 ## Требования
 
-- Python 3.13+
+- Python 3.14+
 - uv (установка: `curl -LsSf https://astral.sh/uv/install.sh | sh`)
 
 ---
